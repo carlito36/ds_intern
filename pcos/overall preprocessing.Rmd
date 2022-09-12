@@ -1,0 +1,301 @@
+---
+title: "0106_2"
+author: '2018150452'
+date: '2022 1 5 '
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(haven)
+df_10 = read_sas("HN10_ALL.sas7bdat")
+df_11 = read_sas("HN11_ALL.sas7bdat")
+df_12 = read_sas("HN12_ALL.sas7bdat")
+df_13 = read_sas("HN13_ALL.sas7bdat")
+df_14 = read_sas("HN14_ALL.sas7bdat")
+df_15 = read_sas("HN15_ALL.sas7bdat")
+df_16 = read_sas("HN16_ALL.sas7bdat")
+
+```
+
+
+```{r}
+library(dplyr)
+df_10_1 <- df_10 %>% filter( HE_BMI >=23 & sex ==2)
+df_11_1 <- df_11 %>% filter( HE_BMI >=23 & sex ==2)
+df_12_1 <- df_12 %>% filter( HE_BMI >=23 & sex ==2)
+df_13_1 <- df_13 %>% filter( HE_BMI >=23 & sex ==2)
+df_14_1 <- df_14 %>% filter( HE_BMI >=23 & sex ==2)
+df_15_1 <- df_15 %>% filter( HE_BMI >=23 & sex ==2)
+df_16_1 <- df_16 %>% filter( HE_BMI >=23 & sex ==2)
+
+
+nrow(df_10_1) + nrow(df_11_1) + nrow(df_12_1) + nrow(df_13_1) + nrow(df_14_1) + nrow(df_15_1) +nrow(df_16_1)
+
+```
+
+```{r}
+df_10_1 = df_10_1 %>% mutate(LW_ms = case_when(
+  LW_ms == 1 ~ 1,
+  LW_ms == 2 ~ 2,
+  LW_ms == 8 ~ 8,
+  LW_ms == 9 ~ 9,
+  LW_mp == 1 ~ 3,
+  LW_mp == 2 ~ 4,
+  LW_mp == 3 ~ 5,
+  LW_mp == 4 ~ 6,
+  LW_mp == 5 ~ 7,
+  LW_mp == 9 ~ 5
+))
+
+df_11_1 = df_11_1 %>% mutate(LW_ms = case_when(
+  LW_ms == 1 ~ 1,
+  LW_ms == 2 ~ 2,
+  LW_ms == 8 ~ 8,
+  LW_ms == 9 ~ 9,
+  LW_mp == 1 ~ 3,
+  LW_mp == 2 ~ 4,
+  LW_mp == 3 ~ 5,
+  LW_mp == 4 ~ 6,
+  LW_mp == 5 ~ 7,
+  LW_mp == 9 ~ 5
+))
+
+df_12_1 = df_12_1 %>% mutate(LW_ms = case_when(
+  LW_ms == 1 ~ 1,
+  LW_ms == 2 ~ 2,
+  LW_ms == 8 ~ 8,
+  LW_ms == 9 ~ 9,
+  LW_mp == 1 ~ 3,
+  LW_mp == 2 ~ 4,
+  LW_mp == 3 ~ 5,
+  LW_mp == 4 ~ 6,
+  LW_mp == 5 ~ 7,
+  LW_mp == 9 ~ 5
+))
+
+df_13_1 = df_13_1 %>% mutate(LW_ms = case_when(
+  LW_ms == 1 ~ 1,
+  LW_ms == 2 ~ 2,
+  LW_ms == 8 ~ 8,
+  LW_ms == 9 ~ 9,
+  LW_mp == 1 ~ 3,
+  LW_mp == 2 ~ 4,
+  LW_mp == 3 ~ 5,
+  LW_mp == 4 ~ 6,
+  LW_mp == 5 ~ 7,
+  LW_mp == 9 ~ 5
+))
+```
+
+
+
+```{r}
+#변수 추출 포괄 변수 : '소득', '교육수준', '결혼여부','주관적건강상태','경제활동상태','체중조절운동여부','음주빈도','현재흡연여부','월경여부','임신경험','BMI'
+df_10_2 = select(df_10_1, incm,edu, marri_1, D_1_1, EC1_1, BO3_01, BD1_11, LW_ms, LW_pr, HE_BMI, BO1, age, kstrata, wt_hs,  LQ_4EQL, LQ_5EQL, BE3_31, BE5_1, LW_pr_1,DI1_pr,DI2_pr, DE1_pr,DF2_pr,BO2_1)
+df_11_2 = select(df_11_1, incm,edu, marri_1, D_1_1, EC1_1, BO3_01, BD1_11 ,LW_ms, LW_pr, HE_BMI, BO1, age, kstrata, wt_hs, LQ_4EQL, LQ_5EQL, BE3_31, BE5_1, LW_pr_1,DI1_pr,DI2_pr, DE1_pr,DF2_pr,BO2_1)
+df_12_2 = select(df_12_1, incm,edu, marri_1, D_1_1, EC1_1, BO3_01, BD1_11, LW_ms, LW_pr, HE_BMI, BO1, age, kstrata, wt_hs, LQ_4EQL, LQ_5EQL, BE3_31, BE5_1, LW_pr_1,DI1_pr,DI2_pr, DE1_pr,DF2_pr,BO2_1)
+df_13_2 = select(df_13_1, incm,edu, marri_1, D_1_1, EC1_1, BO3_01, BD1_11, LW_ms, LW_pr, HE_BMI, BO1, age, kstrata, wt_hs, LQ_4EQL, LQ_5EQL, BE3_31, BE5_1, LW_pr_1,DI1_pr,DI2_pr, DE1_pr,DF2_pr,BO2_1)
+df_14_2 = select(df_14_1, incm,edu, marri_1, D_1_1, EC1_1, BO3_01, BD1_11, LW_ms, LW_pr, HE_BMI, BO1, age, kstrata, wt_hs, LQ_4EQL, LQ_5EQL, BE3_31, BE5_1, LW_pr_1,DI1_pr,DI2_pr, DE1_pr,DF2_pr,BO2_1)
+df_15_2 = select(df_15_1, incm,edu, marri_1, D_1_1, EC1_1, BO3_01, BD1_11, LW_ms, LW_pr, HE_BMI, BO1, age, kstrata, wt_hs, LQ_4EQL, LQ_5EQL, BE3_31, BE5_1, LW_pr_1,DI1_pr,DI2_pr, DE1_pr,DF2_pr,BO2_1)
+df_16_2 = select(df_16_1, incm,edu, marri_1, D_1_1, EC1_1, BO3_01, BD1_11, LW_ms, LW_pr, HE_BMI, BO1, age, kstrata, wt_hs, LQ_4EQL, LQ_5EQL, BE3_31, BE5_1, LW_pr_1,DI1_pr,DI2_pr, DE1_pr,DF2_pr,BO2_1)
+
+
+```
+
+
+
+```{r}
+df <- rbind(df_10_2, df_11_2, df_12_2, df_13_2, df_14_2, df_15_2, df_16_2)
+as.data.frame(df)
+df <- transform(df, BO1 = ifelse(BO1 < 4, 1, 0))
+df <- na.omit(df)
+#결측치 제거 후 11881
+names(df) <- c('소득', '교육수준', '결혼여부','주관적건강상태','경제활동상태','연체중조절운동여부','음주빈도','월경여부','임신경험','BMI', '체형인식','나이','분산추정층','가구가중치','통증불편', '불안우울','걷기일수','근력운동일수','임신횟수','고혈압', '이상지질혈증','당뇨','우울증','연체중조절여부')
+#df <- df %>% select(-BMI)
+
+```
+
+
+
+```{r}
+#결측치 처리
+
+df$음주빈도 <- gsub(8,0, df$음주빈도)
+df$임신경험 <- gsub(2,0, df$임신경험)
+df$임신경험 <- gsub(8,0, df$임신경험)
+
+df$연체중조절운동여부 <- gsub(8, 0, df$연체중조절운동여부)
+
+df$경제활동상태 <- gsub(2, 0, df$경제활동상태)
+df$경제활동상태 <- gsub(8, 0, df$경제활동상태)
+```
+
+```{r}
+df$결혼여부 <- gsub(9, 1, df$결혼여부)
+df$결혼여부 <- gsub(2, 0, df$결혼여부)
+df$주관적건강상태 <- gsub(9, 3, df$주관적건강상태)
+df$연체중조절운동여부 <- gsub(9, 0, df$연체중조절운동여부)
+df$음주빈도 <- gsub(9, 0, df$음주빈도)
+df$임신경험 <- gsub(9, 1, df$임신경험)
+df$경제활동상태 <- gsub(9, 0, df$경제활동상태)
+
+df$경제활동상태 <- as.numeric(df$경제활동상태)
+df$연체중조절운동여부 <- as.numeric(df$연체중조절운동여부)
+df$음주빈도 <- as.numeric(df$음주빈도)
+df$임신경험 <- as.numeric(df$임신경험)
+df$결혼여부 <- as.numeric(df$결혼여부)
+df$주관적건강상태 <- as.numeric(df$주관적건강상태)
+```
+
+```{r}
+#결측치 처리
+df$고혈압 <- gsub(8,0, df$고혈압)
+df$이상지질혈증 <- gsub(8,0, df$이상지질혈증)
+df$당뇨 <- gsub(8,0, df$당뇨)
+df$우울증 <- gsub(8,0,df$우울증)
+df$불안우울 <- gsub(8,0, df$불안우울)
+df$통증불편 <- gsub(8,0, df$통증불편)
+df$근력운동일수 <- gsub(8,0, df$근력운동일수)
+df$임신횟수 <- gsub(88,0, df$임신횟수)
+df$걷기일수 <- gsub(88,0, df$걷기일수)
+
+df$고혈압 <- gsub(9,0, df$고혈압)
+df$이상지질혈증 <- gsub(9,0, df$이상지질혈증)
+df$당뇨 <- gsub(9,0, df$당뇨)
+df$우울증 <- gsub(9,0,df$우울증)
+df$불안우울 <- gsub(9,1, df$불안우울)
+df$통증불편 <- gsub(9,1, df$통증불편)
+df$근력운동일수 <- gsub(9,1, df$근력운동일수)
+df$걷기일수 <- gsub(9,8, df$걷기일수)
+df$임신횟수 <- gsub(99,3, df$임신횟수)
+df$걷기일수 <- gsub(99,8, df$걷기일수)
+df$걷기일수 <- gsub(8,0, df$걷기일수)
+df$연체중조절여부 <- gsub(9,1,df$연체중조절여부)
+df$연체중조절여부 <- gsub(8,1,df$연체중조절여부)
+df$연체중조절여부 <- gsub(4,0,df$연체중조절여부)
+```
+
+```{r}
+df$불안우울 <- as.numeric(df$불안우울)
+df$통증불편 <- as.numeric(df$통증불편)
+df$걷기일수 <- as.numeric(df$걷기일수)
+df$근력운동일수 <- as.numeric(df$근력운동일수)
+df$임신횟수 <- as.numeric(df$임신횟수)
+df$연체중조절여부 <- as.numeric(df$연체중조절여부)
+df$연체중조절여부 <- as.factor(df$연체중조절여부)
+df$고혈압 <- as.numeric(df$고혈압)
+df$이상지질혈증 <- as.numeric(df$이상지질혈증)
+df$당뇨 <- as.numeric(df$당뇨)
+df$우울증 <- as.numeric(df$우울증)
+df$당뇨 <- as.factor(df$당뇨)
+df$고혈압 <- as.factor(df$고혈압)
+df$이상지질혈증 <- as.factor(df$이상지질혈증)
+df$우울증 <- as.factor(df$우울증)
+df$결혼여부 <- as.factor(df$결혼여부)
+df$경제활동상태 <- as.factor(df$경제활동상태)
+df$임신경험 <- as.factor(df$임신경험)
+df$연체중조절운동여부 <- as.factor(df$연체중조절운동여부)
+
+
+
+df <- df %>% filter(임신횟수 < 14)
+df <- na.omit(df)
+#11837
+```
+
+
+```{r}
+df = df %>% mutate(폐경여부 = case_when(
+  월경여부 == 1 ~0,
+  월경여부 == 2~0,
+  월경여부 == 3~0,
+  월경여부 ==4~0,
+  월경여부 ==5~1,
+  월경여부 == 6~1,
+  월경여부 == 7~0,
+  월경여부 == 8~0,
+  월경여부 == 9~1
+))
+
+df = df %>% mutate(폐경종류 = case_when(
+  월경여부 == 1 ~0,
+  월경여부 == 2~0,
+  월경여부 == 3~0,
+  월경여부 ==4~0,
+  월경여부 ==5~1,
+  월경여부 == 6~2,
+  월경여부 == 7~0,
+  월경여부 == 8~0,
+  월경여부 == 9~1
+))
+
+
+df$폐경여부 <- as.numeric(df$폐경여부)
+df$폐경종류 <- as.numeric(df$폐경종류)
+df$폐경여부 <- as.factor(df$폐경여부)
+```
+
+```{r}
+#변수별 히스토그램
+library(purrr)
+library(tidyr)
+library(ggplot2)
+df %>%
+  keep(is.numeric) %>% 
+  gather() %>% 
+  ggplot(aes(value)) +
+    facet_wrap(~ key, scales = "free") +
+    geom_histogram()
+```
+
+
+```{r}
+library(survey)
+
+
+dstrat<-svydesign(id=~1,strata=~분산추정층, weights=~가구가중치, data=df)
+summary(svyglm(체형인식~소득+교육수준+결혼여부+주관적건강상태+경제활동상태+연체중조절여부 + 음주빈도 +  폐경여부 + 임신경험 + 나이, design=dstrat))
+#경제활동상태가 높고 임신경험이 있으면 자가체형인식을 잘못할 확률에 기여
+```
+
+
+
+
+
+
+```{r}
+#세부변수 svyglm
+
+dstrat<-svydesign(id=~1,strata=~분산추정층, weights=~가구가중치, data=df)
+summary(svyglm(체형인식~소득+교육수준 + 결혼여부 + 주관적건강상태  + 연체중조절운동여부  +음주빈도+폐경여부+연체중조절여부+ 통증불편 + 불안우울 + 걷기일수 + 근력운동일수 +임신횟수+나이, design=dstrat))
+
+```
+
+```{r}
+library(moonBook)
+
+dstrat<-svydesign(id=~1,strata=~분산추정층, weights=~가구가중치, data=df)
+dstrat_all_result<-svyglm(체형인식~소득+교육수준+결혼여부+주관적건강상태+경제활동상태+연체중조절여부 + 음주빈도 +  폐경여부 + 임신경험 + 나이, design=dstrat)
+
+
+dstrat1<-svydesign(id=~1,strata=~분산추정층, weights=~가구가중치, data=df)
+dstrat_sep_result<-svyglm(체형인식~소득+교육수준 + 결혼여부 + 주관적건강상태  + 연체중조절운동여부  +음주빈도+폐경여부+연체중조절여부+ 통증불편 + 불안우울 + 걷기일수 + 근력운동일수 +임신횟수+나이, design=dstrat1)
+
+
+dstrat2<-svydesign(id=~1,strata=~분산추정층, weights=~가구가중치, data=df22)
+dstrat_sep2_result<-svyglm(체형인식~소득+교육수준 + 결혼여부 + 주관적건강상태  + 연체중조절운동여부  +음주빈도+폐경여부+연체중조절여부+ 통증불편 + 불안우울 + 걷기일수 + 근력운동일수 +임신횟수+나이, design=dstrat2)
+
+dstrat3<-svydesign(id=~1,strata=~분산추정층, weights=~가구가중치, data=df33)
+dstrat_sep3_result<-svyglm(체형인식~소득+교육수준 + 결혼여부 + 주관적건강상태  + 연체중조절운동여부  +음주빈도+폐경여부+연체중조절여부+ 통증불편 + 불안우울 + 걷기일수 + 근력운동일수 +임신횟수+나이, design=dstrat3)
+
+dstrat4<-svydesign(id=~1,strata=~분산추정층, weights=~가구가중치, data=df22)
+dstrat_sep4_result<-svyglm(체형인식~소득+교육수준 + 결혼여부 + 주관적건강상태  + 연체중조절운동여부  +음주빈도+폐경여부+연체중조절여부+ 통증불편 + 불안우울 + 걷기일수 + 근력운동일수 +임신횟수+나이, design=dstrat4)
+
+# 1% 유의수준에서 유의한 변수들만 plot으로 구현했습니다.
+#ORplot(dstrat_all_result, type=1,main="Plot for Odds Ratios",xlab="odds ratio",sig.level = 0.01,show.OR = TRUE,show.CI = TRUE)
+
+```

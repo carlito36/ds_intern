@@ -1,0 +1,192 @@
+---
+title: "accuracyauc"
+author: '2018150452'
+date: '2022 1 23 '
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+train <- read.csv("C:/Users/star9/바탕 화면/study/인턴/trainage4.csv")
+test <- read.csv("C:/Users/star9/바탕 화면/study/인턴/testage4.csv")
+train <- train %>% select(-X)
+test <- test %>% select(-X)
+train$Class <- as.factor(train$Class)
+test$Class <- as.factor(test$Class)
+x <- rbind(train, test)
+```
+
+```{r}
+set.seed(1234)
+library(rpart) #install.packages("rpart")
+library(adabag) #install.packages("adabag")
+
+#df11 <- df %>% select(체형인식, 소득, 교육수준, 결혼여부, 주관적건강상태, 연체중조절여부, 폐경여부, 나이, BMI)
+#df11$체형인식 <- as.factor(df11$체형인식)
+df11 <- df %>% select(체형인식, 교육수준, 결혼여부, 주관적건강상태, 연체중조절운동여부, 음주빈도, 폐경여부, 나이, 연체중조절여부,걷기일수, 임신횟수, BMI)
+df11$체형인식 <- as.factor(df11$체형인식)
+df22c = select(df22, 교육수준, 주관적건강상태, 음주빈도, 체형인식, 나이, BMI)
+df22c$체형인식 <- as.factor(df22c$체형인식)
+df33c = select(df33, 교육수준, 연체중조절여부, 통증불편, 근력운동일수, 체형인식, 나이, BMI)
+df33c$체형인식 <- as.factor(df33c$체형인식)
+df44c = select(df44, 소득, 교육수준,  주관적건강상태, 연체중조절여부, 걷기일수, 이상지질혈증, 체형인식, 나이, BMI)
+df44c$체형인식 <- as.factor(df44c$체형인식)
+#x <- df44c
+```
+
+```{r}
+set.seed(42)
+x <- downSample(subset(df44c, select=-체형인식), df44c$체형인식)
+
+
+#set.seed(123)
+#idx<-sample(1:nrow(x),nrow(x)*0.7,replace=FALSE)
+#train<-x[idx,]
+#test<-x[-idx,]
+## Bagging
+```
+
+```{r}
+#df11 <- df %>% select(체형인식, 소득, 교육수준, 결혼여부, 주관적건강상태, 연체중조절여부, 폐경여부, 나이, BMI)
+#df11$체형인식 <- as.factor(df11$체형인식)
+df11 <- df %>% select(체형인식, 나이, BMI)
+df11$체형인식 <- as.factor(df11$체형인식)
+df22c = select(df22, 체형인식, 나이, BMI)
+df22c$체형인식 <- as.factor(df22c$체형인식)
+df33c = select(df33, 체형인식, 나이, BMI)
+df33c$체형인식 <- as.factor(df33c$체형인식)
+df44c = select(df44, 체형인식, 나이, BMI)
+df44c$체형인식 <- as.factor(df44c$체형인식)
+#x <- df44c
+set.seed(42)
+x <- downSample(subset(df22c, select=-체형인식), df22c$체형인식)
+
+```
+
+```{r}
+
+set.seed(123)
+idx<-sample(1:nrow(x),nrow(x)*0.7,replace=FALSE)
+train<-x[idx,]
+test<-x[-idx,]
+## Bagging
+
+
+```
+
+
+```{r}
+#my.control = rpart.control(xval=0, cp=0, minsplit=5, maxdepth=10)
+fit<-bagging(Class~.,data=train,mfinal=15)
+names(fit)
+#fit = bagging(체형인식~., data=train, mfinal=50, control=my.control)
+
+
+print(fit$importance)
+importanceplot(fit)
+
+
+## Predicting
+
+pred = predict.bagging(fit, newdata=test)
+yhat = pred$class
+ctable = table(test$Class, yhat, dnn=c("Actual", "Predicted")); ctable #classification table
+
+miss.err = 1-sum(diag(ctable))/sum(ctable) # Misclassification Rate
+pred.acc = 1 - miss.err; pred.acc
+
+#library(Epi)
+
+#bag_ROC <- ROC(form=체형인식~yhat, data=test, plot="ROC")
+```
+
+```{r}
+x <- read.csv('New4.csv', header=TRUE)
+#colnames(x) <- c('bmi', 'age', 'Class')
+names(x)[1] <- c('Class')
+x$Class <- as.factor(x$Class)
+set.seed(42)
+x <- downSample(subset(x, select=-Class), 4x$Class)
+
+```
+
+
+```{r}
+V = 5 #V-fold CV
+miss.err.test = 0
+
+set.seed(1234)
+id = sample(1:V, nrow(x), replace = T)
+
+for(i in 1:V) {
+  
+  print(i)
+  
+  ## Data Partitioning
+
+  train = x[id != i,] 
+  test = x[id == i,] 
+  
+  ## Boosting
+
+  
+  fit = bagging(Class~.,data=train,mfinal=15)
+
+  ## Predicting and Evaluating
+  
+  pred = predict.bagging(fit, newdata=test)
+  yhat = pred$class
+  miss.err.test = miss.err.test + mean(test$Class != yhat) 
+  
+}
+
+cv.err.test = miss.err.test/ V;cv.err.test
+
+
+
+accuracy <- 1- cv.err.test
+accuracy
+
+ctable = table(test$Class, yhat, dnn=c("Actual", "Predicted")); ctable
+```
+
+```{r}
+rocdo <- data.frame(test$Class, yhat)
+rocdo$test.Class <- as.numeric(rocdo$test.Class)
+rocdo$yhat <- as.numeric(rocdo$yhat)
+
+
+```
+```{r}
+Rocc <- roc(rocc$test.Class, rocc$yhat)
+```
+
+
+```{r}
+library("VGAM")
+
+
+fit = glm(체형인식 ~., data = train, family = binomial(link='logit'))
+summary(fit)
+
+fit.pred = predict(fit, newdata = test, type = "response") 
+glm.pred <- rep(0, nrow(test))
+glm.pred[fit.pred > .5] = 1
+
+
+ctable = table(test$체형인식, glm.pred,  dnn = c("Actual", "Predicted"))  
+ctable
+
+miss.err = 1-sum(diag(ctable))/sum(ctable) # Misclassification Rate
+
+pred.acc = 1 - miss.err #Prediction Accuracy
+pred.acc
+
+lr_ROC <- ROC(form=체형인식~glm.pred, data= test, plot="ROC")
+```
+
+

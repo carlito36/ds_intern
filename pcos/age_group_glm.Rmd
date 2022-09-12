@@ -1,0 +1,64 @@
+---
+title: "0106_spec"
+author: '2018150452'
+date: '2022 1 11 '
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+df$ageg = 1
+df$ageg[df$나이<=18]=1
+df$ageg[df$나이>=19 & df$나이 <46]=2
+df$ageg[df$나이>=46 & df$나이 <60]=3
+df$ageg[df$나이>=60]=4
+table(df$ageg)
+```
+```{r}
+
+df11 <- df %>% filter(ageg==1)
+df22 <- df %>% filter(ageg == 2)
+df33 <- df %>% filter(ageg == 3)
+df44 <- df %>% filter(ageg == 4)
+```
+
+
+```{r}
+df44 <- df44 %>% filter(폐경여부 == 1)
+df44$폐경종류 <- as.factor(df44$폐경종류)
+library(survey)
+options(survey.lonely.psu="adjust")
+dstrat<-svydesign(id=~1,strata=~분산추정층, weights=~가구가중치, data=df33)
+summary(svyglm(체형인식~소득+교육수준+결혼여부+경제활동상태+주관적건강상태+연체중조절운동여부+음주빈도+임신경험+음주빈도+통증불편+불안우울+걷기일수+근력운동일수+임신횟수+연체중조절여부+폐경종류+고혈압+이상지질혈증+당뇨+우울증, design=dstrat))
+#폐경여부 53명
+```
+
+
+```{r}
+
+#세부변수 svyglm df22
+df44s <- df44 %>% filter(폐경여부 == 1)
+df44s$폐경종류 <- as.factor(df44s$폐경종류)
+dstrat<-svydesign(id=~1,strata=~분산추정층, weights=~가구가중치, data=df44s)
+summary(svyglm(체형인식~소득+결혼여부+경제활동상태+교육수준+주관적건강상태+체중조절운동여부+음주빈도+연체중조절여부+걷기일수+통증불편+불안우울+임신경험+임신횟수+근력운동일수+당뇨+고혈압+이상지질혈증+우울증+폐경종류+BMI, design=dstrat))
+
+```
+
+```{r}
+options(survey.lonely.psu="adjust")
+dstrat<-svydesign(id=~1,strata=~분산추정층, weights=~가구가중치, data=df44)
+dstrat_all_result<-svyglm(체형인식~소득+교육수준+결혼여부+경제활동상태+주관적건강상태+연체중조절운동여부+음주빈도+임신경험+음주빈도+통증불편+불안우울+걷기일수+근력운동일수+임신횟수+연체중조절여부+폐경종류+고혈압+이상지질혈증+당뇨+우울증, design=dstrat)
+
+# 1% 유의수준에서 유의한 변수들만 plot으로 구현했습니다.
+ORplot(dstrat_all_result, type=1,main="Plot for Odds Ratios",xlab="odds ratio",sig.level = 0.01,show.OR = TRUE,show.CI = TRUE)
+
+```
+
+
+```
+
+
